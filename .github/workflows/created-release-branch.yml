@@ -23,8 +23,17 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // find opend issue with "release" label then close the issue
-            let foundIssue = await github.rest.issues.listForRepo({
+            console.log(await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'release',
+              state: 'open',
+              sort: 'created',
+              direction: 'desc',
+              per_page: 1,
+              page: 1
+            }));
+            const foundIssue = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               labels: 'release',
