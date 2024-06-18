@@ -52,7 +52,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Add comment and Create pr to merge into master from release
+      - name: Add comment and Create pr to merge into main from release
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -104,7 +104,7 @@ jobs:
               repo: context.repo.repo,
               labels: ['release'],
               head: 'release',
-              base: 'master',
+              base: 'main',
               state: 'open',
               sort: 'created',
               direction: 'desc',
@@ -115,10 +115,10 @@ jobs:
               pr = await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `[Release] Merge into master ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`,
+                title: `[Release] Merge into main ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`,
                 labels: ['release'],
                 head: 'release',
-                base: 'master',
+                base: 'main',
                 draft: true
               });
             }
