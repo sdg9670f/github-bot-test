@@ -9,7 +9,7 @@ on:
 
 jobs:
   close_issue_and_create_pr_into_main:
-    if: github.event.pull_request.merged
+    if: github.event.pull_request.merged && github.event.pull_request.head.ref == 'release'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
