@@ -88,12 +88,12 @@ jobs:
             })).data;
             let comments = [];
             comments.push(`Merged PR: [${mergedPr.title}](${mergedPr.html_url})`);
-            comments.push(`Merged branch: ${mergedPr.base.ref}`);
+            comments.push(`- branch: ${mergedPr.base.ref}`);
             comments = comments.concat(mergedCommits.map(commit => commit.commit.message));
             const mergedComment = comments.join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              body: comment
+              body: mergedComment
             });
