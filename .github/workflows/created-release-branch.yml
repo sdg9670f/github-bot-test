@@ -91,7 +91,7 @@ jobs:
             comments.push(`- Branch: ${mergedPr.head.ref}`);
             comments.push(`- Assingees: ${mergedPr.assignees.map(assignee => `@${assignee.login}`).join(', ')}`);
             comments.push('- Commit logs');
-            comments = comments.concat(mergedCommits.map(commit => `> ${commit.commit.message})));
+            comments = comments.concat(mergedCommits.map(commit => `> ${commit.commit.message}`));
             const mergedComment = comments.join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
