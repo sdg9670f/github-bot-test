@@ -11,13 +11,13 @@ on:
       - closed
 
 jobs:
-  create_draft_pr:
-    if: github.event.created
+  create_issue_for_release:
+    if: github.event.created || github.event.forced
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Create draft PR
+      - name: Create issue
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -91,7 +91,7 @@ jobs:
             comments.push(`- Branch: [${mergedPr.head.ref}](${mergedPr.head.repo.html_url}/tree/${mergedPr.head.ref})`);
             comments.push(`- Assingees: ${mergedPr.assignees.map(assignee => `@${assignee.login}`).join(', ')}`);
             comments.push('- Commit logs');
-            comments = comments.concat(commits.map(commit => `> [${commit.commit.message}](${commit.html_url})`));
+            comments = comments.concat(commits.map(commit => `> - [${commit.commit.message}](${commit.html_url})`));
             const mergedComment = comments.join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
