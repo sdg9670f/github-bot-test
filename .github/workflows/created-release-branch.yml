@@ -46,8 +46,8 @@ jobs:
               labels: 'release',
               state: 'open',
               sort: 'created',
-              direction: 'desc'
-              per_page: 1
+              direction: 'desc',
+              per_page: 1,
               page: 1
             }).data[0];
             // add assignee
