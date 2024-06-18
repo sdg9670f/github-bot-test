@@ -121,6 +121,18 @@ jobs:
                 base: 'main',
                 draft: true
               })).data;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `related to #${issue.number}`
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `related to #${pr.number}`
+              });
             }
             await github.rest.issues.addAssignees({
               owner: context.repo.owner,
