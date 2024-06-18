@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Add empty commit
+        run: git commit --allow-empty -m "Create release branch"
       - name: Create draft PR
         uses: actions/github-script@v7
         with:
@@ -32,6 +34,8 @@ jobs:
               draft: true
             });
             console.log(pr.data.html_url);
+      - name: Remove empty commit
+        run: git reset HEAD~1
   add_comment:
     if: github.event.pull_request.merged
     runs-on: ubuntu-latest
