@@ -56,10 +56,11 @@ jobs:
               assingees.push(foundIssue.assignees.map(assignee => assignee.login))
               console.log('어싸인', assingees)
             }
-            await github.rest.issues.addAssignees({
+            const result = await github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.number,
               assignees: assingees
             });
+            console.log(result)
 
