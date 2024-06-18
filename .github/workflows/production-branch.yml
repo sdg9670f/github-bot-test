@@ -43,6 +43,12 @@ jobs:
               head: 'production',
               base: 'main'
             })).data;
+            await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['release']
+            });
             const assingees = []
             if (foundIssue) {
               assingees.push(foundIssue.assignees.map(assignee => assignee.login)

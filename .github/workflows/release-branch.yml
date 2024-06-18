@@ -115,11 +115,16 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 title: `[Release] Merge into production ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`,
-                labels: ['release'],
                 head: 'release',
                 base: 'production',
                 draft: true
               })).data;
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['release']
+              });
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
