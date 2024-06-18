@@ -45,22 +45,17 @@ jobs:
               base: 'main'
             })).data;
             await github.rest.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: pr.number,
-                labels: ['release', 'pr']
-            });
-            const assingees = []
-            console.log('foundIssue', foundIssue)
-            if (foundIssue) {
-              assingees.push(foundIssue.assignees.map(assignee => assignee.login))
-              console.log('어싸인', assingees)
-            }
-            const result = await github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.number,
-              assignees: assingees
+              labels: ['release', 'pr']
             });
-            console.log(result)
+            if (foundIssue) {
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                assignees: foundIssue.assignees.map(assignee => assignee.login)
+              });
+            }
 
