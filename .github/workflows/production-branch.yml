@@ -1,0 +1,56 @@
+name: Production branch
+
+on:
+  pull_request:
+    branches:
+      - 'production'
+
+jobs:
+  close_issue_and_create_pr_into_main:
+    if: github.event.pull_request.merged
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Close issue and create PR into main from production
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const foundIssue = (await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['release'],
+              state: 'open',
+              sort: 'created',
+              direction: 'desc',
+              per_page: 1,
+              page: 1
+            })).data[0];
+            if (foundIssue) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: foundIssue.number,
+                state: 'closed'
+              });
+            }
+            const pr = (await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['release'],
+              title: `[Release] Merge into main ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`,
+              head: 'production',
+              base: 'main'
+            })).data;
+            const assingees = []
+            if (foundIssue) {
+              assingees.push(foundIssue.assignees.map(assignee => assignee.login)
+            }
+            await github.rest.issue.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              assignees: assingees
+            });
+
