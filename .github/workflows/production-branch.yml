@@ -4,6 +4,8 @@ on:
   pull_request:
     branches:
       - 'production'
+    types:
+      - closed
 
 jobs:
   close_issue_and_create_pr_into_main:
