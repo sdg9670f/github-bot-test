@@ -70,12 +70,6 @@ jobs:
             if (!issue) {
               return;
             }
-            await github.rest.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              assignees: ['${{ github.actor }}']
-            });
             const mergedPr = (await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -86,19 +80,6 @@ jobs:
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }}
             })).data;
-            let comments = [];
-            comments.push(`Merged PR: [${mergedPr.title}](${mergedPr.html_url})`);
-            comments.push(`- Branch: [${mergedPr.head.ref}](${mergedPr.head.repo.html_url}/tree/${mergedPr.head.ref})`);
-            comments.push(`- Assingees: ${mergedPr.assignees.map(assignee => `@${assignee.login}`).join(', ')}`);
-            comments.push('- Commit logs');
-            comments = comments.concat(commits.map(commit => `> - [${commit.commit.message}](${commit.html_url})`));
-            const mergedComment = comments.join('\n');
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: issue.number,
-              body: mergedComment
-            });
             let pr = (await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -137,8 +118,27 @@ jobs:
             await github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              issue_number: issue.number,
+              assignees: ['${{ github.actor }}']
+            });
+            await github.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               issue_number: pr.number,
               assignees: ['${{ github.actor }}']
+            });
+            let comments = [];
+            comments.push(`Merged PR: [${mergedPr.title}](${mergedPr.html_url})`);
+            comments.push(`- Branch: [${mergedPr.head.ref}](${mergedPr.head.repo.html_url}/tree/${mergedPr.head.ref})`);
+            comments.push(`- Assingees: ${mergedPr.assignees.map(assignee => `@${assignee.login}`).join(', ')}`);
+            comments.push('- Commit logs');
+            comments = comments.concat(commits.map(commit => `> - [${commit.commit.message}](${commit.html_url})`));
+            const mergedComment = comments.join('\n');
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: mergedComment
             });
             await github.rest.issues.createComment({
               owner: context.repo.owner,
