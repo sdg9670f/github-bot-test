@@ -23,7 +23,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            console.log(await github.rest.issues.listForRepo({
+            const foundIssue = (await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               labels: 'release',
@@ -32,17 +32,7 @@ jobs:
               direction: 'desc',
               per_page: 1,
               page: 1
-            }));
-            const foundIssue = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              labels: 'release',
-              state: 'open',
-              sort: 'created',
-              direction: 'desc',
-              per_page: 1,
-              page: 1
-            }).data[0];
+            })).data[0];
             if (foundIssue) {
               await github.rest.issues.update({
                 owner: context.repo.owner,
@@ -68,7 +58,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issue = await github.rest.issues.listForRepo({
+            const issue = (await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
               labels: 'release',
@@ -77,7 +67,7 @@ jobs:
               direction: 'desc',
               per_page: 1,
               page: 1
-            }).data[0];
+            })).data[0];
             // add assignee
             await github.rest.issues.addAssignees({
               owner: context.repo.owner,
@@ -85,16 +75,16 @@ jobs:
               issue_number: issue.id,
               assignees: ['@${{ github.actor }}']
             });
-            const mergedPr = await github.rest.pulls.get({
+            const mergedPr = (await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }}
-            }).data;
-            const mergedCommits = await github.rest.pulls.listCommits({
+            })).data;
+            const mergedCommits = (await github.rest.pulls.listCommits({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: ${{ github.event.number }}
-            }).data;
+            })).data;
             let comments = [];
             comments.push(`Merged PR: [${mergedPr.title}](${mergedPr.html_url})`);
             comments.push(`Merged branch: ${mergedPr.base.ref}`);
