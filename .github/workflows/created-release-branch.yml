@@ -18,8 +18,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.before }}
       - name: Create draft PR
         uses: actions/github-script@v7
         with:
@@ -71,6 +69,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.id,
-              
+
               body: comment
             });
