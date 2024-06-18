@@ -24,7 +24,7 @@ jobs:
           git config --global user.email 'test@forspacelab.com'
       - name: Add empty commit and push
         run: |
-          git commit --allow-empt≈e branch"
+          git commit --allow-empty -m "Release branch created"
           git push origin release
       - name: Create draft PR
         uses: actions/github-script@v7
