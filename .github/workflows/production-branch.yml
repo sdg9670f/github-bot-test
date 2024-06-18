@@ -51,8 +51,10 @@ jobs:
                 labels: ['release', 'pr']
             });
             const assingees = []
+            console.log('foundIssue', foundIssue)
             if (foundIssue) {
               assingees.push(foundIssue.assignees.map(assignee => assignee.login))
+              console.log('어싸인', assingees)
             }
             await github.rest.issues.addAssignees({
               owner: context.repo.owner,
