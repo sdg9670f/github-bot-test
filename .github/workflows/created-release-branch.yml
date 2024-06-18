@@ -88,8 +88,10 @@ jobs:
             })).data;
             let comments = [];
             comments.push(`Merged PR: [${mergedPr.title}](${mergedPr.html_url})`);
-            comments.push(`- branch: ${mergedPr.base.ref}`);
-            comments = comments.concat(mergedCommits.map(commit => commit.commit.message));
+            comments.push(`- Branch: ${mergedPr.head.ref}`);
+            comments.push(`- Assingees: ${mergedPr.assignees.map(assignee => `@${assignee.login}`).join(', ')}`);
+            comments.push('- Commit logs');
+            comments = comments.concat(mergedCommits.map(commit => `> ${commit.commit.message})));
             const mergedComment = comments.join('\n');
             await github.rest.issues.createComment({
               owner: context.repo.owner,
