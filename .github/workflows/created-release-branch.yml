@@ -132,5 +132,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.number,
-              body: comment.body
+              body: mergedComment
             });
