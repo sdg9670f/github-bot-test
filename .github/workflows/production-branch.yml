@@ -22,7 +22,7 @@ jobs:
             const foundIssue = (await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ['release'],
+              labels: ['release', 'issue'],
               state: 'open',
               sort: 'created',
               direction: 'desc',
@@ -40,7 +40,6 @@ jobs:
             const pr = (await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ['release'],
               title: `[Release] Merge into main ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`,
               head: 'production',
               base: 'main'
@@ -49,7 +48,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                labels: ['release']
+                labels: ['release', 'pr']
             });
             const assingees = []
             if (foundIssue) {

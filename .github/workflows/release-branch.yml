@@ -25,7 +25,7 @@ jobs:
             const foundIssue = (await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ['release'],
+              labels: ['release', 'issue'],
               state: 'open',
               sort: 'created',
               direction: 'desc',
@@ -43,7 +43,7 @@ jobs:
             const foundPr = (await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ['release'],
+              labels: ['release', 'pr'],
               head: 'release',
               base: 'production',
               state: 'open',
@@ -64,7 +64,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `[Release] ${new Date().toLocaleString('ko-KR', {timeZone: 'Asia/Seoul'})}`,
-              labels: ['release']
+              labels: ['release', 'issue']
             });
   add_comment_and_create_pr_into_production:
     if: github.event.pull_request.merged
@@ -80,7 +80,7 @@ jobs:
             const issue = (await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ['release'],
+              labels: ['release', 'issue'],
               state: 'open',
               sort: 'created',
               direction: 'desc',
@@ -103,7 +103,7 @@ jobs:
             let pr = (await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ['release'],
+              labels: ['release', 'pr'],
               head: 'release',
               base: 'production',
               state: 'open',
@@ -125,7 +125,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                labels: ['release']
+                labels: ['release', 'pr']
               });
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
