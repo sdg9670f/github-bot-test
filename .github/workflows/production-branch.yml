@@ -53,7 +53,7 @@ jobs:
             });
             const assingees = []
             if (foundIssue) {
-              assingees.push(foundIssue.assignees.map(assignee => assignee.login)
+              assingees.push(foundIssue.assignees.map(assignee => assignee.login))
             }
             await github.rest.issue.addAssignees({
               owner: context.repo.owner,
