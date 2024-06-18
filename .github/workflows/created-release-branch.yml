@@ -33,9 +33,7 @@ jobs:
               direction: 'desc',
               per_page: 1,
               page: 1
-            });
-            console.log(foundIssue);
-            foundIssue = foundIssue.data[0];
+            }).data[0];
             if (foundIssue) {
               await github.rest.issues.update({
                 owner: context.repo.owner,
