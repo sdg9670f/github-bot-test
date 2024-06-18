@@ -55,7 +55,7 @@ jobs:
             if (foundIssue) {
               assingees.push(foundIssue.assignees.map(assignee => assignee.login))
             }
-            await github.rest.issue.addAssignees({
+            await github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.number,
