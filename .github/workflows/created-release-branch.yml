@@ -18,6 +18,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Set git user
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'test@forspacelab.com'
       - name: Add empty commit
         run: git commit --allow-empty -m "Create release branch"
       - name: Create draft PR
