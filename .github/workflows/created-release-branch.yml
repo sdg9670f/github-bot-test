@@ -74,7 +74,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: issue.number,
-              assignees: ['@${{ github.actor }}']
+              assignees: ['${{ github.actor }}']
             });
             const mergedPr = (await github.rest.pulls.get({
               owner: context.repo.owner,
