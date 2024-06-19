@@ -7,8 +7,11 @@ on:
     types:
       - closed
 
+env:
+  VERSION: ''
+
 jobs:
-  create_tag:
+  create_tag_and_release:
     if: github.event.pull_request.merged && github.event.pull_request.head.ref == 'production'
     runs-on: ubuntu-latest
     steps:
@@ -29,22 +32,15 @@ jobs:
             // PR에 붙은 레이블 중 버전 확인
             const version = labels.find(label => /^v(\d+\.\d+\.\d+)$/.test(label));
             if (version) {
-              const tag = (await github.rest.git.createTag({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                tag: `${version}`,
-                message: `${version}`,
-                object: context.payload.pull_request.head.sha,
-                type: 'commit',
-                tagger: {
-                  name: context.actor,
-                  email: context.payload.pull_request.user.email || `${context.actor}@forspacelab.com`,
-                },
-              })).data;
               await github.rest.git.createRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 ref: `refs/tags/${version}`,
-                sha: tag.sha,
+                sha: context.payload.pull_request.head.sha
               });
             }
+            core.exportVariable('VERSION', version);
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.VERSION }}
