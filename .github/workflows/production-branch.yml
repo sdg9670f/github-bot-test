@@ -20,6 +20,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const version = context.payload.pull_request.head.ref.split('/').pop();
+
+            // release 이슈 확인
             const foundIssue = (await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -28,35 +30,41 @@ jobs:
               sort: 'created',
               direction: 'desc',
               per_page: 1,
-              page: 1
+              page: 1,
             })).data[0];
+
+            // release 이슈 종료
             if (foundIssue) {
               await github.rest.issues.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: foundIssue.number,
-                state: 'closed'
+                state: 'closed',
               });
             }
+
+            // production PR 생성
             const pr = (await github.rest.pulls.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `[Release] Merge into main ${version}`,
               head: 'production',
-              base: 'main'
+              base: 'main',
             })).data;
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: pr.number,
-              labels: ['release', 'pr', version]
+              labels: ['release', 'pr', version],
             });
+
+            // release 이슈 assignees를 PR에 추가
             if (foundIssue) {
               await github.rest.issues.addAssignees({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: pr.number,
-                assignees: foundIssue.assignees.map(assignee => assignee.login)
+                assignees: foundIssue.assignees.map(assignee => assignee.login),
               });
             }
 
