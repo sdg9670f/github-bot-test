@@ -29,10 +29,15 @@ jobs:
             // PR에 붙은 레이블 중 버전 확인
             const version = labels.find(label => /^v(\d+\.\d+\.\d+)$/.test(label));
             if (version) {
-              await github.rest.git.createRef({
+              await github.rest.git.createTag({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                ref: `refs/tags/${version}`,
-                sha: context.payload.pull_request.head.sha
+                tag: `${version}`,
+                message: `${version}`,
+                object: context.payload.pull_request.head.sha,
+                type: 'commit'
+                tagger: {
+                  name: context.actor,
+                  email: context.user.email || `${context.actor}@forspacelab.com`,
               });
             }
