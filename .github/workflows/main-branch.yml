@@ -10,13 +10,30 @@ on:
 jobs:
   # create tag from release/* branch
   create_tag_from_release:
-    if: github.event.pull_request.merged && startsWith(github.event.pull_request.head.ref, 'release/')
+    if: github.event.pull_request.merged && startsWith(github.event.pull_request.head.ref, 'production')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
       - name: Create tag
-        run: |
-          version = $(echo ${{ github.event.pull_request.head.ref }} | cut -d '/' -f 2)
-          git tag $version
-          git push origin $version
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // PR에 붙은 레이블 확인
+            const labels = (await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number
+            })).data.map(label => label.name);
+
+            // PR에 붙은 레이블 중 버전 확인
+            const version = labels.find(label => /^v(\d+\.\d+\.\d+)$/.test(label));
+            if (version) {
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${version}`,
+                sha: context.payload.pull_request.head.sha
+              });
+            }
