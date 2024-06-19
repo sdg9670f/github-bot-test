@@ -1,0 +1,22 @@
+name: Main branch
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    types:
+      - closed
+
+jobs:
+  # create tag from release/* branch
+  create_tag_from_release:
+    if: github.event.pull_request.merged && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Create tag
+        run: |
+          version = $(echo ${{ github.event.pull_request.head.ref }} | cut -d '/' -f 2)
+          git tag $version
+          git push origin $version
