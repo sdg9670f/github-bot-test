@@ -88,7 +88,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const version = context.ref.split('/').pop();
-
+            const headTicket = context.payload.pull_request.head.ref.split('/').pop();
             // 이슈 불러오기
             const issue = (await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -175,6 +175,7 @@ jobs:
             });
             let comments = [];
             comments.push(`Merged PR: [${mergedPr.title}](${mergedPr.html_url}) #${mergedPr.number}`);
+            comments.push(`- ClickUp: https://app.clickup.com/t/25500885/${headTicket}`);
             comments.push(`- Branch: [${mergedPr.head.ref}](${mergedPr.head.repo.html_url}/tree/${mergedPr.head.ref})`);
             comments.push(`- Assingees: ${mergedPr.assignees.map(assignee => `@${assignee.login}`).join(', ')}`);
             comments.push('- Commit logs');
