@@ -8,9 +8,8 @@ on:
       - closed
 
 jobs:
-  # create tag from release/* branch
-  create_tag_from_release:
-    if: github.event.pull_request.merged && startsWith(github.event.pull_request.head.ref, 'production')
+  create_tag:
+    if: github.event.pull_request.merged && github.event.pull_request.head.ref == 'production'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
