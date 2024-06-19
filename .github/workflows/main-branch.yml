@@ -35,7 +35,7 @@ jobs:
                 tag: `${version}`,
                 message: `${version}`,
                 object: context.payload.pull_request.head.sha,
-                type: 'commit'
+                type: 'commit',
                 tagger: {
                   name: context.actor,
                   email: context.user.email || `${context.actor}@forspacelab.com`,
