@@ -39,5 +39,6 @@ jobs:
                 tagger: {
                   name: context.actor,
                   email: context.user.email || `${context.actor}@forspacelab.com`,
+                },
               });
             }
